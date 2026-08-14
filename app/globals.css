@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f8f7;
+  --foreground: #14312e;
+
+  /* Junior Gym brand palette */
+  --color-brand-teal-950: #06211f;
+  --color-brand-teal-900: #0a3733;
+  --color-brand-teal-800: #0f4a44;
+  --color-brand-teal-700: #145d55;
+  --color-brand-teal-600: #1a7268;
+  --color-brand-teal-500: #22897c;
+
+  --color-brand-coral-600: #e5502f;
+  --color-brand-coral-500: #f2643f;
+  --color-brand-coral-400: #f97a55;
+  --color-brand-coral-100: #ffe4da;
+
+  --color-brand-amber-500: #f5a623;
+  --color-brand-amber-400: #ffbb3d;
+  --color-brand-amber-100: #fff1d6;
+
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef3f2;
+  --color-border: #dde6e4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-brand-teal-950: var(--color-brand-teal-950);
+  --color-brand-teal-900: var(--color-brand-teal-900);
+  --color-brand-teal-800: var(--color-brand-teal-800);
+  --color-brand-teal-700: var(--color-brand-teal-700);
+  --color-brand-teal-600: var(--color-brand-teal-600);
+  --color-brand-teal-500: var(--color-brand-teal-500);
+
+  --color-brand-coral-600: var(--color-brand-coral-600);
+  --color-brand-coral-500: var(--color-brand-coral-500);
+  --color-brand-coral-400: var(--color-brand-coral-400);
+  --color-brand-coral-100: var(--color-brand-coral-100);
+
+  --color-brand-amber-500: var(--color-brand-amber-500);
+  --color-brand-amber-400: var(--color-brand-amber-400);
+  --color-brand-amber-100: var(--color-brand-amber-100);
+
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-border: var(--color-border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Cairo", Arial, Helvetica, sans-serif;
+}

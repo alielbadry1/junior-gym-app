@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Junior Gym — الشاشة الافتتاحية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0F6E56;
+    --teal-light:#E1F5EE;
+    --orange:#D85A30;
+    --orange-light:#FAECE7;
+    --amber:#EF9F27;
+    --amber-light:#FAEEDA;
+    --bg:#FAF9F6;
+    --card:#FFFFFF;
+    --text:#2C2C2A;
+    --text-muted:#5F5E5A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Cairo',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+  .topbar{
+    background:linear-gradient(90deg,var(--teal) 0%, #0c5a45 100%);
+    padding:22px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    color:white;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .logo-mark{
+    width:44px;height:44px;border-radius:12px;
+    background:var(--orange);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:20px;color:white;
+  }
+  .brand h1{
+    font-size:20px;margin:0;font-weight:900;letter-spacing:.5px;
+  }
+  .brand span{
+    display:block;font-size:12px;font-weight:400;opacity:.85;
+  }
+  .userbox{
+    display:flex;align-items:center;gap:10px;font-size:14px;
+  }
+  .avatar{
+    width:34px;height:34px;border-radius:50%;background:var(--amber);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;color:#412402;font-size:13px;
+  }
+  main{
+    max-width:1180px;margin:0 auto;padding:36px 40px 60px;
+  }
+  .welcome{
+    margin-bottom:28px;
+  }
+  .welcome h2{
+    font-size:24px;font-weight:900;margin:0 0 4px;
+  }
+  .welcome p{
+    color:var(--text-muted);margin:0;font-size:14px;
+  }
+  .kpis{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:34px;
+  }
+  .kpi{
+    background:var(--card);border-radius:14px;padding:16px 18px;
+    border-inline-start:5px solid var(--teal);
+  }
+  .kpi:nth-child(2){border-inline-start-color:var(--orange);}
+  .kpi:nth-child(3){border-inline-start-color:var(--amber);}
+  .kpi:nth-child(4){border-inline-start-color:var(--teal);}
+  .kpi .label{font-size:12px;color:var(--text-muted);font-weight:700;}
+  .kpi .value{font-size:22px;font-weight:900;margin-top:4px;}
+
+  .section-title{
+    font-size:16px;font-weight:700;margin:30px 0 14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .section-title::before{
+    content:"";width:6px;height:18px;background:var(--orange);border-radius:3px;
+  }
+
+  .grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+  }
+  .app-card{
+    background:var(--card);
+    border-radius:18px;
+    padding:20px 16px;
+    text-align:center;
+    cursor:pointer;
+    border:1px solid #EEECE4;
+    transition:transform .15s, box-shadow .15s;
+  }
+  .app-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 24px rgba(15,110,86,.12);
+  }
+  .icon-wrap{
+    width:56px;height:56px;border-radius:16px;
+    margin:0 auto 12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;
+  }
+  .icon-wrap.teal{background:var(--teal-light);color:var(--teal);}
+  .icon-wrap.orange{background:var(--orange-light);color:var(--orange);}
+  .icon-wrap.amber{background:var(--amber-light);color:#854F0B;}
+
+  .app-card .name{font-weight:700;font-size:14px;}
+  .app-card .desc{font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+  .footer-note{
+    text-align:center;margin-top:50px;font-size:12px;color:var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo-mark">JG</div>
+    <div>
+      <h1>Junior Gym</h1>
+      <span>sport club — مكتب أصول</span>
+    </div>
+  </div>
+  <div class="userbox">
+    <span>كابتن أحمد شوشه</span>
+    <div class="avatar">أ.ش</div>
+  </div>
+</div>
+
+<main>
+  <div class="welcome">
+    <h2>أهلًا بيك 👋</h2>
+    <p>اختار الشاشة اللي عايز تشتغل عليها</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="label">عملاء نشطون</div><div class="value">—</div></div>
+    <div class="kpi"><div class="label">تحصيلات النهاردة</div><div class="value">—</div></div>
+    <div class="kpi"><div class="label">حضور النهاردة</div><div class="value">—</div></div>
+    <div class="kpi"><div class="label">رصيد الخزينة</div><div class="value">—</div></div>
+  </div>
+
+  <div class="section-title">العمليات اليومية</div>
+  <div class="grid">
+    <div class="app-card">
+      <div class="icon-wrap teal">✓</div>
+      <div class="name">تسجيل الحضور والدفع</div>
+      <div class="desc">اليومية</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap orange">＋</div>
+      <div class="name">إنشاء اشتراك</div>
+      <div class="desc">كود اشتراك جديد</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap amber">👤</div>
+      <div class="name">الطلاب / العملاء</div>
+      <div class="desc">بيانات وكشوف حساب</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap teal">🏋</div>
+      <div class="name">الاشتراكات</div>
+      <div class="desc">متابعة ومتتبع السيشنات</div>
+    </div>
+  </div>
+
+  <div class="section-title">الإعدادات الأساسية</div>
+  <div class="grid">
+    <div class="app-card">
+      <div class="icon-wrap orange">🗂</div>
+      <div class="name">البرامج والأنشطة</div>
+      <div class="desc">شجرة الأقسام والبرامج</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap teal">🎓</div>
+      <div class="name">المدربون</div>
+      <div class="desc">التكليفات والنسب</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap amber">🧑‍💼</div>
+      <div class="name">الموظفون</div>
+      <div class="desc">الأقسام والرواتب</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap orange">🤝</div>
+      <div class="name">شركاء لاند</div>
+      <div class="desc">حصص وتوزيع أرباح</div>
+    </div>
+  </div>
+
+  <div class="section-title">المالية والتقارير</div>
+  <div class="grid">
+    <div class="app-card">
+      <div class="icon-wrap teal">💰</div>
+      <div class="name">النقدية والخزينة</div>
+      <div class="desc">الخزينة، فودافون كاش، انستاباي</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap orange">📈</div>
+      <div class="name">قائمة الدخل</div>
+      <div class="desc">بالأقسام / الأنشطة / الشهور</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap amber">⚖️</div>
+      <div class="name">المركز المالي</div>
+      <div class="desc">وميزان المراجعة</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap teal">📋</div>
+      <div class="name">الالتزامات المستحقة</div>
+      <div class="desc">سلف وإيجار مستحق</div>
+    </div>
+  </div>
+
+  <div class="section-title">الإدارة</div>
+  <div class="grid">
+    <div class="app-card">
+      <div class="icon-wrap orange">🏢</div>
+      <div class="name">الأصول الثابتة</div>
+      <div class="desc">المعدات والاستهلاك</div>
+    </div>
+    <div class="app-card">
+      <div class="icon-wrap teal">🔐</div>
+      <div class="name">المستخدمون والصلاحيات</div>
+      <div class="desc">إدارة فريق العمل</div>
+    </div>
+  </div>
+
+  <div class="footer-note">Junior Gym sport club — نموذج أولي للشاشة الافتتاحية، لسه قيد المراجعة</div>
+</main>
+
+</body>
+</html>

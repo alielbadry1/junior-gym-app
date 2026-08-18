@@ -5,36 +5,34 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { excelBufferToRows, readCell, type ImportState } from "@/lib/excel";
 
-// party_roles.role enum, confirmed from schema.sql: customer/trainer/employee/owner/partner.
-const STUDENT_ROLE = "customer";
+const TRAINER_ROLE = "trainer";
 
-export async function createStudent(formData: FormData) {
+export async function createTrainer(formData: FormData) {
   const full_name = String(formData.get("full_name") ?? "").trim();
   const phone_1 = String(formData.get("phone_1") ?? "").trim() || null;
   const phone_2 = String(formData.get("phone_2") ?? "").trim() || null;
-  const referral_source =
-    String(formData.get("referral_source") ?? "").trim() || null;
   const notes = String(formData.get("notes") ?? "").trim() || null;
+  const redirectTo = String(formData.get("redirect_to") ?? "/trainers");
 
   if (!full_name) {
-    throw new Error("اسم الطالب مطلوب");
+    throw new Error("اسم المدرب مطلوب");
   }
 
   const supabase = await createClient();
 
   const { data: party, error: partyError } = await supabase
     .from("parties")
-    .insert({ full_name, phone_1, phone_2, referral_source, notes })
+    .insert({ full_name, phone_1, phone_2, notes })
     .select("id")
     .single();
 
   if (partyError || !party) {
-    throw new Error(partyError?.message ?? "فشل إنشاء سجل الطالب");
+    throw new Error(partyError?.message ?? "فشل إنشاء سجل المدرب");
   }
 
   const { error: roleError } = await supabase.from("party_roles").insert({
     party_id: party.id,
-    role: STUDENT_ROLE,
+    role: TRAINER_ROLE,
     status: "active",
     started_at: new Date().toISOString().slice(0, 10),
   });
@@ -43,11 +41,12 @@ export async function createStudent(formData: FormData) {
     throw new Error(roleError.message);
   }
 
-  revalidatePath("/students");
-  redirect("/students");
+  revalidatePath("/trainers");
+  revalidatePath("/programs");
+  redirect(redirectTo);
 }
 
-export async function importStudents(
+export async function importTrainers(
   _prevState: ImportState,
   formData: FormData
 ): Promise<ImportState> {
@@ -71,25 +70,22 @@ export async function importStudents(
     }
     const phone_1 = readCell(row, "الهاتف 1", "phone_1") || null;
     const phone_2 = readCell(row, "الهاتف 2", "phone_2") || null;
-    const phone_3 = readCell(row, "الهاتف 3", "phone_3") || null;
-    const referral_source =
-      readCell(row, "مصدر التعريف", "referral_source") || null;
     const notes = readCell(row, "ملاحظات", "notes") || null;
 
     const { data: party, error: partyError } = await supabase
       .from("parties")
-      .insert({ full_name, phone_1, phone_2, phone_3, referral_source, notes })
+      .insert({ full_name, phone_1, phone_2, notes })
       .select("id")
       .single();
 
     if (partyError || !party) {
-      errors.push(`صف ${rowNum}: ${partyError?.message ?? "فشل إنشاء الطالب"}`);
+      errors.push(`صف ${rowNum}: ${partyError?.message ?? "فشل إنشاء المدرب"}`);
       continue;
     }
 
     const { error: roleError } = await supabase.from("party_roles").insert({
       party_id: party.id,
-      role: STUDENT_ROLE,
+      role: TRAINER_ROLE,
       status: "active",
       started_at: new Date().toISOString().slice(0, 10),
     });
@@ -102,32 +98,6 @@ export async function importStudents(
     successCount++;
   }
 
-  revalidatePath("/students");
+  revalidatePath("/trainers");
   return { status: "done", successCount, errorCount: errors.length, errors };
-}
-
-export async function updateStudent(id: string, formData: FormData) {
-  const full_name = String(formData.get("full_name") ?? "").trim();
-  const phone_1 = String(formData.get("phone_1") ?? "").trim() || null;
-  const phone_2 = String(formData.get("phone_2") ?? "").trim() || null;
-  const referral_source =
-    String(formData.get("referral_source") ?? "").trim() || null;
-  const notes = String(formData.get("notes") ?? "").trim() || null;
-
-  if (!full_name) {
-    throw new Error("اسم الطالب مطلوب");
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("parties")
-    .update({ full_name, phone_1, phone_2, referral_source, notes })
-    .eq("id", id);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  revalidatePath("/students");
-  redirect("/students");
 }

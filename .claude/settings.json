@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(netstat -ano)",
+      "Bash(taskkill //F //PID 10304)",
+      "Bash(echo \"TSC_EXIT:$?\")",
+      "Bash(awk '{print $5}')",
+      "Bash(xargs -r -I{} taskkill //F //PID {})",
+      "Bash(npm install *)",
+      "Bash(npm audit *)",
+      "Bash(npm uninstall *)",
+      "Bash(git mv *)",
+      "Bash(mv middleware.ts proxy.ts)"
+    ]
+  }
+}

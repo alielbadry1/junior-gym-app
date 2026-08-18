@@ -7,9 +7,7 @@ const ROLE_LABELS: Record<string, string> = {
   trainer: "مدرب",
   employee: "موظف",
   owner: "مالك",
-  accounts_manager: "مدير حسابات",
-  office_accountant: "محاسب مكتب",
-  secretary: "سكرتارية",
+  partner: "شريك",
 };
 
 function roleLabel(role: string) {
@@ -47,12 +45,26 @@ export default async function StudentsPage({
               إدارة بيانات الطلاب وأولياء الأمور والأدوار المرتبطة بهم
             </p>
           </div>
-          <Link
-            href="/students/new"
-            className="inline-flex items-center rounded-xl bg-brand-coral-500 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-brand-coral-600 transition-colors"
-          >
-            + إضافة طالب
-          </Link>
+          <div className="flex gap-2">
+            <a
+              href="/students/export"
+              className="inline-flex items-center rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-bold text-brand-teal-800 hover:bg-surface-muted transition-colors"
+            >
+              تصدير إكسيل
+            </a>
+            <Link
+              href="/students/import"
+              className="inline-flex items-center rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-bold text-brand-teal-800 hover:bg-surface-muted transition-colors"
+            >
+              استيراد إكسيل
+            </Link>
+            <Link
+              href="/students/new"
+              className="inline-flex items-center rounded-xl bg-brand-coral-500 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-brand-coral-600 transition-colors"
+            >
+              + إضافة طالب
+            </Link>
+          </div>
         </div>
 
         <form className="mb-5">

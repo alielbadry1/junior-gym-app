@@ -1,120 +1,131 @@
+import Link from "next/link";
 import AppShell from "@/components/AppShell";
-import { createClient } from "@/lib/supabase/server";
 
-type StatCard = {
-  label: string;
-  value: string;
-  hint?: string;
-  accent: "teal" | "coral" | "amber";
+type Accent = "teal" | "coral" | "amber";
+
+type ModuleTile = {
+  href: string;
+  icon: string;
+  name: string;
+  desc: string;
+  accent: Accent;
+  disabled?: boolean;
 };
 
-async function getDashboardStats(): Promise<StatCard[]> {
-  const supabase = await createClient();
-  const today = new Date().toISOString().slice(0, 10);
-
-  const [activeSubs, attendanceToday, receiptsToday] = await Promise.all([
-    supabase
-      .from("subscriptions")
-      .select("customer_party_id", { count: "exact", head: true })
-      .eq("status", "active"),
-    supabase
-      .from("subscription_sessions")
-      .select("id", { count: "exact", head: true })
-      .eq("actual_date", today)
-      .eq("status", "attended"),
-    supabase
-      .from("daily_transactions")
-      .select("amount, transaction_types!inner(name)")
-      .eq("transaction_date", today)
-      .ilike("transaction_types.name", "%استلام%"),
-  ]);
-
-  const receiptsSum =
-    receiptsToday.data?.reduce(
-      (sum, row) => sum + Number(row.amount ?? 0),
-      0
-    ) ?? 0;
-
-  return [
-    {
-      label: "عملاء نشطون",
-      value:
-        activeSubs.error || activeSubs.count === null
-          ? "—"
-          : String(activeSubs.count),
-      hint: "عدد الاشتراكات الفعّالة حاليًا",
-      accent: "teal",
-    },
-    {
-      label: "تحصيلات اليوم",
-      value: receiptsToday.error ? "—" : `${receiptsSum.toLocaleString("ar-EG")} ج.م`,
-      hint: "إجمالي الاستلام النقدي اليوم",
-      accent: "coral",
-    },
-    {
-      label: "حضور اليوم",
-      value:
-        attendanceToday.error || attendanceToday.count === null
-          ? "—"
-          : String(attendanceToday.count),
-      hint: "عدد السيشنات المسجّل حضورها اليوم",
-      accent: "amber",
-    },
-    {
-      label: "رصيد الخزينة",
-      value: "قيد الإعداد",
-      hint: "سيُفعَّل مع محرك القيود المحاسبية",
-      accent: "teal",
-    },
-  ];
-}
-
-const ACCENT_CLASSES: Record<StatCard["accent"], string> = {
-  teal: "border-brand-teal-600/30 bg-brand-teal-700/5",
-  coral: "border-brand-coral-500/30 bg-brand-coral-100/40",
-  amber: "border-brand-amber-500/30 bg-brand-amber-100/40",
+type ModuleGroup = {
+  title: string;
+  tiles: ModuleTile[];
 };
 
-export default async function DashboardPage() {
-  const stats = await getDashboardStats();
+const MODULE_GROUPS: ModuleGroup[] = [
+  {
+    title: "العمليات اليومية",
+    tiles: [
+      { href: "/attendance", icon: "✓", name: "تسجيل الحضور والدفع", desc: "اليومية", accent: "teal" },
+      { href: "/subscriptions/new", icon: "＋", name: "إنشاء اشتراك", desc: "كود اشتراك جديد", accent: "coral" },
+      { href: "/students", icon: "👤", name: "الطلاب / العملاء", desc: "بيانات وكشوف حساب", accent: "amber" },
+      { href: "/subscriptions", icon: "🏋", name: "الاشتراكات", desc: "متابعة ومتتبع السيشنات", accent: "teal" },
+    ],
+  },
+  {
+    title: "الإعدادات الأساسية",
+    tiles: [
+      { href: "/programs", icon: "🗂", name: "البرامج والأنشطة", desc: "شجرة الأقسام والبرامج", accent: "coral" },
+      { href: "/trainers", icon: "🎓", name: "المدربون", desc: "التكليفات والنسب", accent: "teal" },
+      { href: "#", icon: "🧑‍💼", name: "الموظفون", desc: "قريبًا — شاشة مستقلة", accent: "amber", disabled: true },
+      { href: "#", icon: "🤝", name: "شركاء لاند", desc: "قريبًا — بانتظار العقد", accent: "coral", disabled: true },
+    ],
+  },
+  {
+    title: "المالية والتقارير",
+    tiles: [
+      { href: "/reports/cash", icon: "💰", name: "النقدية والخزينة", desc: "الخزينة، فودافون كاش، انستاباي", accent: "teal" },
+      { href: "/reports/income-statement", icon: "📈", name: "قائمة الدخل", desc: "بالأقسام / الأنشطة / الشهور", accent: "coral" },
+      { href: "/reports/balance-sheet", icon: "⚖️", name: "المركز المالي", desc: "وميزان المراجعة", accent: "amber" },
+      { href: "/reports/liabilities", icon: "📋", name: "الالتزامات المستحقة", desc: "سلف وإيجار مستحق", accent: "teal" },
+    ],
+  },
+  {
+    title: "الإدارة",
+    tiles: [
+      { href: "#", icon: "🏢", name: "الأصول الثابتة", desc: "قريبًا — المعدات والاستهلاك", accent: "coral", disabled: true },
+      { href: "/users", icon: "🔐", name: "المستخدمون والصلاحيات", desc: "إدارة فريق العمل", accent: "teal" },
+    ],
+  },
+];
 
+const ICON_WRAP_CLASSES: Record<Accent, string> = {
+  teal: "bg-brand-teal-600/10 text-brand-teal-700",
+  coral: "bg-brand-coral-100 text-brand-coral-600",
+  amber: "bg-brand-amber-100 text-amber-800",
+};
+
+export default function DashboardPage() {
   return (
     <AppShell>
       <div className="max-w-5xl">
         <div className="mb-8">
           <h1 className="text-2xl font-extrabold text-brand-teal-900">
-            الرئيسية
+            أهلًا بيك 👋
           </h1>
-          <p className="text-sm text-brand-teal-700 mt-1">مكتب أصول</p>
+          <p className="text-sm text-brand-teal-700 mt-1">
+            اختار الشاشة اللي عايز تشتغل عليها
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className={`rounded-2xl border p-5 bg-surface shadow-sm ${ACCENT_CLASSES[stat.accent]}`}
-            >
-              <div className="text-sm font-medium text-brand-teal-800/80">
-                {stat.label}
+        <div className="space-y-10">
+          {MODULE_GROUPS.map((group) => (
+            <section key={group.title}>
+              <h2 className="flex items-center gap-2 text-base font-bold text-brand-teal-900 mb-4">
+                <span className="inline-block h-[18px] w-[6px] rounded-sm bg-brand-coral-500" />
+                {group.title}
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {group.tiles.map((tile) =>
+                  tile.disabled ? (
+                    <div
+                      key={tile.name}
+                      className="rounded-2xl border border-border bg-surface p-5 text-center opacity-50 cursor-not-allowed"
+                    >
+                      <div
+                        className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl text-2xl ${ICON_WRAP_CLASSES[tile.accent]}`}
+                      >
+                        {tile.icon}
+                      </div>
+                      <div className="text-sm font-bold text-brand-teal-950">
+                        {tile.name}
+                      </div>
+                      <div className="text-xs text-brand-teal-700/60 mt-1">
+                        {tile.desc}
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      key={tile.name}
+                      href={tile.href}
+                      className="rounded-2xl border border-border bg-surface p-5 text-center transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-brand-teal-600/30"
+                    >
+                      <div
+                        className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl text-2xl ${ICON_WRAP_CLASSES[tile.accent]}`}
+                      >
+                        {tile.icon}
+                      </div>
+                      <div className="text-sm font-bold text-brand-teal-950">
+                        {tile.name}
+                      </div>
+                      <div className="text-xs text-brand-teal-700/60 mt-1">
+                        {tile.desc}
+                      </div>
+                    </Link>
+                  )
+                )}
               </div>
-              <div className="mt-2 text-3xl font-extrabold text-brand-teal-950">
-                {stat.value}
-              </div>
-              {stat.hint && (
-                <div className="mt-1 text-xs text-brand-teal-700/70">
-                  {stat.hint}
-                </div>
-              )}
-            </div>
+            </section>
           ))}
         </div>
 
-        <div className="mt-10 rounded-2xl border border-border bg-surface p-6">
-          <h2 className="font-bold text-brand-teal-900">الخطوات القادمة</h2>
-          <p className="text-sm text-brand-teal-700/80 mt-2 leading-relaxed">
-            هذه النسخة الأولى من النظام. الشاشات التالية قيد الإنشاء تباعًا:
-            الطلاب، البرامج والأنشطة، الاشتراكات، والحضور اليومي.
-          </p>
+        <div className="mt-12 text-center text-xs text-brand-teal-700/50">
+          Junior Gym — مكتب أصول
         </div>
       </div>
     </AppShell>

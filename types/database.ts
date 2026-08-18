@@ -15,6 +15,64 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      app_users: {
+        Row: {
+          id: string;
+          party_id: string | null;
+          full_name: string;
+          role: string;
+          active: boolean;
+          created_at: string | null;
+        };
+        Insert: {
+          id: string;
+          party_id?: string | null;
+          full_name: string;
+          role?: string;
+          active?: boolean;
+          created_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["app_users"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "app_users_party_id_fkey";
+            columns: ["party_id"];
+            isOneToOne: false;
+            referencedRelation: "parties";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      app_user_permissions: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          screen: string;
+          can_view: boolean;
+          can_edit: boolean;
+          can_delete: boolean;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          screen: string;
+          can_view?: boolean;
+          can_edit?: boolean;
+          can_delete?: boolean;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["app_user_permissions"]["Insert"]
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "app_user_permissions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "app_users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       activities: {
         Row: {
           id: string;
@@ -323,9 +381,11 @@ export interface Database {
         Row: {
           id: string;
           party_id: string | null;
-          // DB enum — actual allowed values not yet confirmed from schema.sql.
-          // Known roles from requirements: owner, accounts_manager, office_accountant,
-          // secretary, trainer, employee, customer. Verify/adjust against the DB enum.
+          // DB enum `party_role`, confirmed from schema.sql:
+          // 'customer' | 'trainer' | 'employee' | 'owner' | 'partner'.
+          // Staff job titles (accounts_manager/office_accountant/secretary) are not
+          // separate enum values — they'll be modeled via a future permissions/users
+          // system, not party_roles.role.
           role: string;
           department: string | null;
           cost_center_id: string | null;
